@@ -938,9 +938,9 @@ void applicationLoop() {
 		modelLambo.render(modelMatrixLamboChasis);
 		glActiveTexture(GL_TEXTURE0);
 		glm::mat4 modelMatrixLamboLeftDor = glm::mat4(modelMatrixLamboChasis);
-		modelMatrixLamboLeftDor = glm::translate(modelMatrixLamboLeftDor, glm::vec3(1.08676, 0.707316, 0.982601));
+		modelMatrixLamboLeftDor = glm::translate(modelMatrixLamboLeftDor, glm::vec3(1.084, 0.701, 0.9817));
 		modelMatrixLamboLeftDor = glm::rotate(modelMatrixLamboLeftDor, glm::radians(dorRotCount), glm::vec3(1.0, 0, 0));
-		modelMatrixLamboLeftDor = glm::translate(modelMatrixLamboLeftDor, glm::vec3(-1.08676, -0.707316, -0.982601));
+		modelMatrixLamboLeftDor = glm::translate(modelMatrixLamboLeftDor, glm::vec3(-1.084, -0.701, -0.9817));
 		modelLamboLeftDor.render(modelMatrixLamboLeftDor);
 		modelLamboRightDor.render(modelMatrixLamboChasis);
 		modelLamboFrontLeftWheel.render(modelMatrixLamboChasis);
@@ -1088,13 +1088,13 @@ void applicationLoop() {
 			if (numberAdvance == 0)
 				maxAdvance = 65.0f;
 			else if (numberAdvance == 1)
-				maxAdvance = 49.0;
+				maxAdvance = 49.0f;
 			else if (numberAdvance == 2)
-				maxAdvance = 44.5;
+				maxAdvance = 44.5f;
 			else if (numberAdvance == 3)
-				maxAdvance = 49.0;
+				maxAdvance = 49.0f;
 			else if (numberAdvance == 4)
-				maxAdvance = 44.5;
+				maxAdvance = 44.5f;
 			state = 1;
 				break;
 		case 1:
@@ -1125,8 +1125,31 @@ void applicationLoop() {
 					if (numberAdvance > 4)
 						numberAdvance = 1;
 			}
+				
 			break;
 		}
+		//std::cout << "Maximo acance:=>" << advanceCount << std::endl;
+
+		//MAQUINA DE ESTADOS DE LA PUERTA DEL LAMBO
+		switch (stateDoor) {
+			case 0:
+				dorRotCount += 0.5;
+				if (dorRotCount > 75.0f)
+					stateDoor = 1;
+			break;
+
+			case 1:
+				dorRotCount -= 0.5;
+				if (dorRotCount < 0) {
+					stateDoor = 0;
+					dorRotCount = 0.0f;
+				}
+				break;
+		default:
+			break;
+		}
+
+
 
 		glfwSwapBuffers(window);
 	}
