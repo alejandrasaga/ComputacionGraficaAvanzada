@@ -81,6 +81,12 @@ Model modelDartLegoLeftHand;
 Model modelDartLegoRightHand;
 Model modelDartLegoLeftLeg;
 Model modelDartLegoRightLeg;
+//Buzz
+Model modelBuzzHead;
+Model modelBuzzTorso;
+Model modelBuzzLeftArm;
+Model modelBuzzLeftForearm;
+Model modelBuzzLeftHand;
 
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
 GLuint skyboxTextureID;
@@ -111,6 +117,7 @@ glm::mat4 modelMatrixHeli = glm::mat4(1.0f);
 glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
+glm::mat4 modelMatrixBuz = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 int modelSelected = 0;
@@ -288,6 +295,17 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelDartLegoLeftLeg.setShader(&shaderMulLighting);
 	modelDartLegoRightLeg.loadModel("../models/LegoDart/LeoDart_right_leg.obj");
 	modelDartLegoRightLeg.setShader(&shaderMulLighting);
+
+	modelBuzzHead.loadModel("../models/buzz/buzzlightyHead.obj");
+	modelBuzzHead.setShader(&shaderMulLighting);
+	modelBuzzTorso.loadModel("../models/buzz/buzzlightyTorso.obj");
+	modelBuzzTorso.setShader(&shaderMulLighting);
+	modelBuzzLeftArm.loadModel("../models/buzz/buzzlightyLeftArm.obj");
+	modelBuzzLeftArm.setShader(&shaderMulLighting);
+	modelBuzzLeftForearm.loadModel("../models/buzz/buzzlightyLeftForearm.obj");
+	modelBuzzLeftForearm.setShader(&shaderMulLighting);
+	modelBuzzLeftHand.loadModel("../models/buzz/buzzlightyLeftHand.obj");
+	modelBuzzLeftHand.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
@@ -524,6 +542,11 @@ void destroy() {
 	modelLamboRearRightWheel.destroy();
 	modelLamboRightDor.destroy();
 	modelRock.destroy();
+	modelBuzzHead.destroy();
+	modelBuzzTorso.destroy();
+	modelBuzzLeftArm.destroy();
+	modelBuzzLeftForearm.destroy();
+	modelBuzzLeftHand.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -713,6 +736,8 @@ void applicationLoop() {
 	modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(23.0, 0.0, 0.0));
 
 	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(3.0, 0.0, 20.0));
+
+	modelMatrixBuz = glm::translate(modelMatrixBuz, glm::vec3(3.0, 0.0, -5.0));
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -1000,6 +1025,19 @@ void applicationLoop() {
 		modelDartLegoRightLeg.render(modelMatrixDartRightLeg);
 		// Se regresa el cull faces IMPORTANTE para la capa
 		glEnable(GL_CULL_FACE);
+
+		glm::mat4 modelMatrixBuzBody = glm::mat4(modelMatrixBuz);//sobre estas hacemos rotaciones
+		modelMatrixBuzBody = glm::scale(modelMatrixBuzBody, glm::vec3(2.5f, 2.5f, 2.5f));
+		modelBuzzTorso.render(modelMatrixBuzBody);
+		glm::mat4 modelMatrixBuzLeftArm = glm::mat4(modelMatrixBuzBody);
+		modelBuzzLeftArm.render(modelMatrixBuzLeftArm);
+		glm::mat4 modelMatrixBuzLeftForeArm = glm::mat4(modelMatrixBuzLeftArm);
+		modelBuzzLeftForearm.render(modelMatrixBuzLeftForeArm);
+		glm::mat4 modelMatrixBuzLeftHand = glm::mat4(modelMatrixBuzLeftForeArm);
+		modelBuzzLeftHand.render(modelMatrixBuzLeftHand);
+		glm::mat4 modelMatrixBuzHead = glm::mat4(modelMatrixBuzBody);
+		modelBuzzHead.render(modelMatrixBuzBody);
+
 
 		/*******************************************
 		 * Skybox
