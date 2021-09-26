@@ -1060,20 +1060,18 @@ void applicationLoop() {
 			}
 		}
 		else if (keyFramesDart.size() > 0) {
-			//para reproducir el frame
+			//Para reproducir el frame
 			interpolationDart = numPasosDart / (float)maxNumPasosDart;
 			numPasosDart++;
 			if (interpolationDart > 1.0) {
 				numPasosDart = 0;
-				interpolationDart = 1.0;
+				interpolationDart = 0;
 				indexFrameDart = indexFrameDartNext;
-				indexFrameDartNext++; 
+				indexFrameDartNext++;
 			}
 			if (indexFrameDartNext > keyFramesDart.size() - 1)
 				indexFrameDartNext = 0;
 			modelMatrixDart = interpolate(keyFramesDart, indexFrameDart, indexFrameDartNext, 0, interpolationDart);
-
-
 		}
 
 		// Constantes de animaciones
