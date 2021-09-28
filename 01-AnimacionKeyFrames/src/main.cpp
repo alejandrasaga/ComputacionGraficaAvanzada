@@ -780,6 +780,14 @@ void applicationLoop() {
 	float rotWheelsY = 0.0;
 	int numberAdvance = 0;
 	int maxAdvance = 0.0;
+	//Var to machine state for Lambo
+	int state2 = 0;
+	float advanceCount2 = 0.0;
+	float rotCount2 = 0.0;
+	float rotWheelsX2 = 0.0;
+	float rotWheelsY2 = 0.0;
+	int numberAdvance2 = 0;
+	int maxAdvance2 = 0.0;
 
 	matrixModelRock = glm::translate(matrixModelRock, glm::vec3(-3.0, 0.0, 2.0));
 
@@ -788,6 +796,7 @@ void applicationLoop() {
 	modelMatrixAircraft = glm::translate(modelMatrixAircraft, glm::vec3(10.0, 2.0, -17.5));
 
 	modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(23.0, 0.0, 0.0));
+	modelMatrixLambo = glm::rotate(modelMatrixLambo, glm::radians(180.0f), glm::vec3(0, 1, 0));
 
 	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(3.0, 0.0, 20.0));
 
@@ -1008,6 +1017,7 @@ void applicationLoop() {
 		modelEclipseRearWheels.render(modelMatrixRearWheels);
 
 		// Helicopter
+		
 		glm::mat4 modelMatrixHeliChasis = glm::mat4(modelMatrixHeli);
 		modelHeliChasis.render(modelMatrixHeliChasis);
 
@@ -1016,7 +1026,7 @@ void applicationLoop() {
 		modelMatrixHeliHeli = glm::rotate(modelMatrixHeliHeli, rotHelHelY, glm::vec3(0, 1, 0));
 		modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
 		modelHeliHeli.render(modelMatrixHeliHeli);
-
+		
 		// Lambo car
 		glDisable(GL_CULL_FACE);
 		glm::mat4 modelMatrixLamboChasis = glm::mat4(modelMatrixLambo);
@@ -1237,21 +1247,73 @@ void applicationLoop() {
 		}
 		//std::cout << "Maximo acance:=>" << advanceCount << std::endl;
 
-		//MAQUINA DE ESTADOS DE LA PUERTA DEL LAMBO
-		switch (stateDoor) {
+		//MAQUINA DE ESTADOS DEL LAMBO
+		switch (state2) {
+		case 0:
+			if (numberAdvance2 == 0)
+				maxAdvance2 = 30.0f;
+			else if (numberAdvance2 == 1)
+				maxAdvance2 = 40.0;
+			else if (numberAdvance2 == 2)
+				maxAdvance2 = 35.5;
+			else if (numberAdvance2 == 3)
+				maxAdvance2 = 40.0;
+			else if (numberAdvance2 == 4)
+				maxAdvance2 = 35.5;
+			else if (numberAdvance2 == 5)
+				maxAdvance2 = 5.5;
+			if (numberAdvance2 < 5)
+				state2 = 1;
+			else
+				state2 = 3;
+			break;
+		case 1:
+			modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0.0f, 0.0f, 0.1));
+			advanceCount2 += 0.1;
+			rotWheelsX2 += 0.05;
+			rotWheelsY2 -= 0.02;
+			if (rotWheelsY2 < 0)
+				rotWheelsY2 = 0;
+			if (advanceCount2 > maxAdvance2) {
+				advanceCount2 = 0;
+				numberAdvance2++;
+				state2 = 2;
+			}
+			break;
+
+		case 2:
+			modelMatrixLambo = glm::translate(modelMatrixLambo, glm::vec3(0.0f, 0.0f, 0.025f));
+			modelMatrixLambo = glm::rotate(modelMatrixLambo, glm::radians(0.5f), glm::vec3(0.0f, 1.0f, 0.0f));
+			rotCount2 += 0.5f;
+			rotWheelsX2 += 0.05;
+			rotWheelsY2 += 0.02;
+			if (rotWheelsY2 > 0.24)
+				rotWheelsY2 = 0.24;
+			if (rotCount2 >= 90.0f) {
+				rotCount2 = 0;
+				state2 = 0;
+			}
+			break;
+		case 3:
+			switch (stateDoor) {
 			case 0:
 				dorRotCount += 0.5;
 				if (dorRotCount > 75.0f)
 					stateDoor = 1;
-			break;
-
+				break;
 			case 1:
 				dorRotCount -= 0.5;
 				if (dorRotCount < 0) {
-					stateDoor = 0;
 					dorRotCount = 0.0f;
+					stateDoor = 2;
 				}
 				break;
+			case 2:
+				break;
+			default:
+				break;
+			}
+
 		default:
 			break;
 		}
