@@ -87,6 +87,9 @@ Model modelBuzzTorso;
 Model modelBuzzLeftArm;
 Model modelBuzzLeftForearm;
 Model modelBuzzLeftHand;
+//Model Assassin's Creed Shao Jun
+Model modelAC_Shao;
+//Model Pani
 
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
 GLuint skyboxTextureID;
@@ -118,6 +121,7 @@ glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixBuzz = glm::mat4(1.0f);
+glm::mat4 modelMatrixAC_Shao = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 float rotBuzzHead = 0.0, rotBuzzLeftArm = 0.0, rotBuzzLeftForeArm = 0.0, rotBuzzLeftHand = 0.0;
@@ -322,6 +326,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelBuzzLeftHand.loadModel("../models/buzz/buzzlightyLeftHand.obj");
 	modelBuzzLeftHand.setShader(&shaderMulLighting);
 
+	//Model Assassin's Creed Ale
+	modelAC_Shao.loadModel("../models/AC_Shao/AC-C_PC_CHARACTER_Shao_Jun_Chronicles.obj");
+	modelAC_Shao.setShader(&shaderMulLighting);
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
 	// Definimos el tamanio de la imagen
@@ -562,6 +569,8 @@ void destroy() {
 	modelBuzzLeftArm.destroy();
 	modelBuzzLeftForearm.destroy();
 	modelBuzzLeftHand.destroy();
+	//model Assassin's Creed Ale 
+	modelAC_Shao.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -783,6 +792,9 @@ void applicationLoop() {
 	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(3.0, 0.0, 20.0));
 
 	modelMatrixBuzz = glm::translate(modelMatrixBuzz, glm::vec3(3.0, 0.0, -5.0));
+
+	modelMatrixAC_Shao = glm::translate(modelMatrixAC_Shao, glm::vec3(8.0, 0.0, -25.0));
+	modelMatrixAC_Shao = glm::scale(modelMatrixAC_Shao, glm::vec3(1.5f, 1.5f, 1.5f));
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -1074,6 +1086,7 @@ void applicationLoop() {
 		modelDartLegoRightLeg.render(modelMatrixDartRightLeg);
 		// Se regresa el cull faces IMPORTANTE para la capa
 		glEnable(GL_CULL_FACE);
+
 		//Matrices del modelo de Buzz
 		glm::mat4 modelMatrixBuzzBody = glm::mat4(modelMatrixBuzz);//sobre estas hacemos rotaciones
 		modelMatrixBuzzBody = glm::scale(modelMatrixBuzzBody, glm::vec3(2.5f, 2.5f, 2.5f));
@@ -1090,8 +1103,11 @@ void applicationLoop() {
 		modelBuzzLeftHand.render(modelMatrixBuzzLeftHand);
 		glm::mat4 modelMatrixBuzzHead = glm::mat4(modelMatrixBuzzBody);
 		modelMatrixBuzzHead = glm::rotate(modelMatrixBuzzHead, rotBuzzHead, glm::vec3(0.0f, 1.0f, 0.0f));
-		modelBuzzHead.render(modelMatrixBuzzHead
-		);
+		modelBuzzHead.render(modelMatrixBuzzHead);
+		
+		//Model Assassin's Creed Ale
+		modelAC_Shao.render(modelMatrixAC_Shao);
+
 		
 
 		/*******************************************
