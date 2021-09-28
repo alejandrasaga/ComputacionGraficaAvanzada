@@ -1330,7 +1330,6 @@ void applicationLoop() {
 				modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
 				modelHeliHeli.render(modelMatrixHeliHeli);
 
-
 				modelMatrixHeli = glm::translate(modelMatrixHeli, glm::vec3(0.0f,-0.01f, 0.0f));
 				alturaHeli += 0.01;
 				if (alturaHeli < 4.85)
@@ -1345,16 +1344,24 @@ void applicationLoop() {
 				break;
 
 			case 1:
-				modelMatrixHeliHeli = glm::rotate(modelMatrixHeliHeli, rotHelHelY, glm::vec3(0, 1, 0));
+				modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, -0.249548));
+				modelMatrixHeliHeli = glm::rotate(modelMatrixHeliHeli, rotHelHelY, glm::vec3(0.0, 0.01, 0.0));//Mueve la helice principal
+				modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
+				modelHeliHeli.render(modelMatrixHeliHeli);
 				velHeli += 0.5;
+				rotHelHelY += 0.05;
 				if (velHeli > 15.0) {
 					velHeli = 0.0;
-					stateHeli = 1;
+					stateHeli = 2;
 				}
 				break;
 
 			case 2:
-
+				modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, -0.249548));
+				modelMatrixHeliHeli = glm::rotate(modelMatrixHeliHeli, rotHelHelY, glm::vec3(0.0, 0.01, 0.0));//Mueve la helice principal
+				modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
+				modelHeliHeli.render(modelMatrixHeliHeli);
+				stateHeli = 2;
 				break;
 		default:
 			break;
