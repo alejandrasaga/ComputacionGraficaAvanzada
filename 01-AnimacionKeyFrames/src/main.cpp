@@ -103,7 +103,8 @@ Model modelBuzzRightWing1;
 Model modelBuzzRightWing2;
 //Model Assassin's Creed Shao Jun
 Model modelAC_Shao;
-//Model Pani
+//Modelo Luigi Mario Party 8
+Model modelLuigi;
 
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
 GLuint skyboxTextureID;
@@ -136,6 +137,7 @@ glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixBuzz = glm::mat4(1.0f);
 glm::mat4 modelMatrixAC_Shao = glm::mat4(1.0f);
+glm::mat4 modelMatrixLuigi = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 float rotBuzzHead = 0.0, rotBuzzLeftArm = 0.0, rotBuzzLeftForeArm = 0.0, rotBuzzLeftHand = 0.0, rotBuzzRightArm = 0.0;
@@ -371,10 +373,14 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelBuzzRightWing2.loadModel("../models/buzz/buzzlightyRightWing2.obj");
 	modelBuzzRightWing2.setShader(&shaderMulLighting);
 
-	//Model Assassin's Creed Ale
+	//Model Assassin's Creed 
 	modelAC_Shao.loadModel("../models/AC_Shao/AC-C_PC_CHARACTER_Shao_Jun_Chronicles.obj");
 	modelAC_Shao.setShader(&shaderMulLighting);
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
+
+	//Modelo Luigi
+	modelLuigi.loadModel("../models/Luigi/Luigi.obj");
+	modelLuigi.setShader(&shaderMulLighting);
 
 	// Definimos el tamanio de la imagen
 	int imageWidth, imageHeight;
@@ -614,8 +620,10 @@ void destroy() {
 	modelBuzzLeftArm.destroy();
 	modelBuzzLeftForeArm.destroy();
 	modelBuzzLeftHand.destroy();
-	//model Assassin's Creed Ale 
+	//model Assassin's Creed
 	modelAC_Shao.destroy();
+	//Modelo Luigi
+	modelLuigi.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -858,6 +866,9 @@ void applicationLoop() {
 
 	modelMatrixAC_Shao = glm::translate(modelMatrixAC_Shao, glm::vec3(8.0, 0.0, -25.0));
 	modelMatrixAC_Shao = glm::scale(modelMatrixAC_Shao, glm::vec3(1.5f, 1.5f, 1.5f));
+
+	modelMatrixLuigi = glm::translate(modelMatrixLuigi, glm::vec3(-6.0, 0.0, -15.0));
+	modelMatrixLuigi = glm::scale(modelMatrixLuigi, glm::vec3(0.055f, 0.055f, 0.055f));
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -1210,6 +1221,9 @@ void applicationLoop() {
 		
 		//Model Assassin's Creed Ale
 		modelAC_Shao.render(modelMatrixAC_Shao);
+
+		//Luigi
+		modelLuigi.render(modelMatrixLuigi);
 
 		
 
