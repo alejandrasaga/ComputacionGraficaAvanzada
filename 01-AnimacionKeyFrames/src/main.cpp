@@ -169,7 +169,7 @@ int indexFrameBuzzJoints = 0;
 int indexFrameBuzzJointsNext = 1;
 float interpolationBuzzJoints = 0.0;
 int maxNumPasosBuzzJoints = 20;
-int numPasosbuzzJoints = 0;
+int numPasosBuzzJoints = 0;
 int indexFrameBuzz = 0;
 int indexFrameBuzzNext = 1;
 float interpolationBuzz = 0.0;
@@ -886,6 +886,10 @@ void applicationLoop() {
 		std::vector<glm::mat4> matrixDart;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		std::vector<float> matrixBuzzJoints;
+		std::vector<glm::mat4> matrixBuzz;
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f),
 			(float)screenWidth / (float)screenHeight, 0.01f, 100.0f);
 		glm::mat4 view = camera->getViewMatrix();
@@ -1225,7 +1229,7 @@ void applicationLoop() {
 		glCullFace(oldCullFaceMode);
 		glDepthFunc(oldDepthFuncMode);
 
-		if (record && modelSelected == 1) {//ESTO GUARDA LOS FRAMES
+		if (record && modelSelected == 1) {//ESTO GUARDA LOS FRAMES	**********	FRAMES DE DART
 			matrixDartJoints.push_back(rotDartHead);//EL ORDEN IMPORTA
 			matrixDartJoints.push_back(rotDartLeftArm);
 			matrixDartJoints.push_back(rotDartLeftHand);
@@ -1282,8 +1286,56 @@ void applicationLoop() {
 			modelMatrixDart = interpolate(keyFramesDart, indexFrameDart, indexFrameDartNext, 0, interpolationDart);
 		}
 
-		// Constantes de animaciones
-		//rotHelHelY = 15.0;
+		//***REPRODUCIR FRAMES DE BUZZ**//
+		if (record && modelSelected == 3) {//ESTO GUARDA LOS FRAMES DE BUZZ
+			matrixBuzzJoints.push_back(rotBuzzHead);//EL ORDEN IMPORTA
+			matrixBuzzJoints.push_back(rotBuzzLeftArm);
+			matrixBuzzJoints.push_back(rotBuzzRightArm);
+
+			if (saveFrame) {
+				appendFrame(myfile, matrixBuzzJoints);
+				saveFrame = false;
+			}
+		}
+		else if (keyFramesBuzzJoints.size() > 0)//para reproducir frames{
+		{
+			interpolationBuzzJoints = numPasosBuzzJoints / (float)maxNumPasosBuzzJoints;
+			numPasosBuzzJoints++;
+			if (interpolationBuzzJoints > 1.0) {
+				numPasosBuzzJoints = 0;
+				interpolationBuzzJoints = 0;
+				indexFrameBuzzJoints = indexFrameBuzzJointsNext;
+				indexFrameBuzzJointsNext++;
+			}
+			if (indexFrameBuzzJointsNext > keyFramesBuzzJoints.size() - 1)
+				indexFrameBuzzJointsNext = 0;
+
+			rotBuzzHead = interpolate(keyFramesBuzzJoints, indexFrameBuzzJoints, indexFrameBuzzJointsNext, 0, interpolationBuzzJoints);
+			rotBuzzLeftArm = interpolate(keyFramesBuzzJoints, indexFrameBuzzJoints, indexFrameBuzzJointsNext, 1, interpolationBuzzJoints);
+			rotBuzzRightArm = interpolate(keyFramesBuzzJoints, indexFrameBuzzJoints, indexFrameBuzzJointsNext, 2, interpolationBuzzJoints);
+		}
+
+		if (record && modelSelected == 4) {
+			matrixBuzz.push_back(modelMatrixBuzz);
+			if (saveFrame) {
+				appendFrame(myfile, matrixBuzz);
+				saveFrame = false;
+			}
+		}
+		else if (keyFramesBuzz.size() > 0) {
+			//Para reproducir el frame
+			interpolationBuzz = numPasosBuzz / (float)maxNumPasosBuzz;
+			numPasosBuzz++;
+			if (interpolationBuzz > 1.0) {
+				numPasosBuzz = 0;
+				interpolationBuzz = 0;
+				indexFrameBuzz = indexFrameBuzzNext;
+				indexFrameBuzzNext++;
+			}
+			if (indexFrameBuzzNext > keyFramesBuzz.size() - 1)
+				indexFrameBuzzNext = 0;
+			modelMatrixBuzz = interpolate(keyFramesBuzz, indexFrameBuzz, indexFrameBuzzNext, 0, interpolationBuzz);
+		}
 
 		/*****************
 		* MAQUINAS DE ESTADO
