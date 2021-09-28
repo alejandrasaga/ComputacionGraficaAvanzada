@@ -81,12 +81,26 @@ Model modelDartLegoLeftHand;
 Model modelDartLegoRightHand;
 Model modelDartLegoLeftLeg;
 Model modelDartLegoRightLeg;
-//Buzz
+// Buzz Lightyear
 Model modelBuzzHead;
 Model modelBuzzTorso;
 Model modelBuzzLeftArm;
-Model modelBuzzLeftForearm;
+Model modelBuzzLeftForeArm;
 Model modelBuzzLeftHand;
+Model modelBuzzHip;
+Model modelBuzzLeftCalf;
+Model modelBuzzLeftFoot;
+Model modelBuzzLeftThigh;
+Model modelBuzzLeftWing1;
+Model modelBuzzLeftWing2;
+Model modelBuzzRightArm;
+Model modelBuzzRightForeArm;
+Model modelBuzzRightHand;
+Model modelBuzzRightCalf;
+Model modelBuzzRightFoot;
+Model modelBuzzRightThigh;
+Model modelBuzzRightWing1;
+Model modelBuzzRightWing2;
 //Model Assassin's Creed Shao Jun
 Model modelAC_Shao;
 //Model Pani
@@ -124,7 +138,7 @@ glm::mat4 modelMatrixBuzz = glm::mat4(1.0f);
 glm::mat4 modelMatrixAC_Shao = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
-float rotBuzzHead = 0.0, rotBuzzLeftArm = 0.0, rotBuzzLeftForeArm = 0.0, rotBuzzLeftHand = 0.0;
+float rotBuzzHead = 0.0, rotBuzzLeftArm = 0.0, rotBuzzLeftForeArm = 0.0, rotBuzzLeftHand = 0.0, rotBuzzRightArm = 0.0;
 int modelSelected = 0;
 bool enableCountSelected = true;
 
@@ -317,16 +331,45 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelDartLegoRightLeg.loadModel("../models/LegoDart/LeoDart_right_leg.obj");
 	modelDartLegoRightLeg.setShader(&shaderMulLighting);
 
+	// Buzz
 	modelBuzzHead.loadModel("../models/buzz/buzzlightyHead.obj");
 	modelBuzzHead.setShader(&shaderMulLighting);
 	modelBuzzTorso.loadModel("../models/buzz/buzzlightyTorso.obj");
 	modelBuzzTorso.setShader(&shaderMulLighting);
 	modelBuzzLeftArm.loadModel("../models/buzz/buzzlightyLeftArm.obj");
 	modelBuzzLeftArm.setShader(&shaderMulLighting);
-	modelBuzzLeftForearm.loadModel("../models/buzz/buzzlightyLeftForearm.obj");
-	modelBuzzLeftForearm.setShader(&shaderMulLighting);
+	modelBuzzLeftForeArm.loadModel("../models/buzz/buzzlightyLeftForearm.obj");
+	modelBuzzLeftForeArm.setShader(&shaderMulLighting);
 	modelBuzzLeftHand.loadModel("../models/buzz/buzzlightyLeftHand.obj");
 	modelBuzzLeftHand.setShader(&shaderMulLighting);
+	modelBuzzHip.loadModel("../models/buzz/buzzlightyHip.obj");
+	modelBuzzHip.setShader(&shaderMulLighting);
+	modelBuzzLeftCalf.loadModel("../models/buzz/buzzlightyLeftCalf.obj");
+	modelBuzzLeftCalf.setShader(&shaderMulLighting);
+	modelBuzzLeftFoot.loadModel("../models/buzz/buzzlightyLeftFoot.obj");
+	modelBuzzLeftFoot.setShader(&shaderMulLighting);
+	modelBuzzLeftThigh.loadModel("../models/buzz/buzzlightyLeftThigh.obj");
+	modelBuzzLeftThigh.setShader(&shaderMulLighting);
+	modelBuzzLeftWing1.loadModel("../models/buzz/buzzlightyLeftWing1.obj");
+	modelBuzzLeftWing1.setShader(&shaderMulLighting);
+	modelBuzzLeftWing2.loadModel("../models/buzz/buzzlightyLeftWing2.obj");
+	modelBuzzLeftWing2.setShader(&shaderMulLighting);
+	modelBuzzRightArm.loadModel("../models/buzz/buzzlightyRightArm.obj");
+	modelBuzzRightArm.setShader(&shaderMulLighting);
+	modelBuzzRightForeArm.loadModel("../models/buzz/buzzlightyRightForearm.obj");
+	modelBuzzRightForeArm.setShader(&shaderMulLighting);
+	modelBuzzRightHand.loadModel("../models/buzz/buzzlightyRightHand.obj");
+	modelBuzzRightHand.setShader(&shaderMulLighting);
+	modelBuzzRightCalf.loadModel("../models/buzz/buzzlightyRightCalf.obj");
+	modelBuzzRightCalf.setShader(&shaderMulLighting);
+	modelBuzzRightFoot.loadModel("../models/buzz/buzzlightyRightFoot.obj");
+	modelBuzzRightFoot.setShader(&shaderMulLighting);
+	modelBuzzRightThigh.loadModel("../models/buzz/buzzlightyRightThigh.obj");
+	modelBuzzRightThigh.setShader(&shaderMulLighting);
+	modelBuzzRightWing1.loadModel("../models/buzz/buzzlightyRightWing1.obj");
+	modelBuzzRightWing1.setShader(&shaderMulLighting);
+	modelBuzzRightWing2.loadModel("../models/buzz/buzzlightyRightWing2.obj");
+	modelBuzzRightWing2.setShader(&shaderMulLighting);
 
 	//Model Assassin's Creed Ale
 	modelAC_Shao.loadModel("../models/AC_Shao/AC-C_PC_CHARACTER_Shao_Jun_Chronicles.obj");
@@ -569,7 +612,7 @@ void destroy() {
 	modelBuzzHead.destroy();
 	modelBuzzTorso.destroy();
 	modelBuzzLeftArm.destroy();
-	modelBuzzLeftForearm.destroy();
+	modelBuzzLeftForeArm.destroy();
 	modelBuzzLeftHand.destroy();
 	//model Assassin's Creed Ale 
 	modelAC_Shao.destroy();
@@ -757,6 +800,13 @@ bool processInput(bool continueApplication) {
 	else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
 		glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 		rotBuzzLeftArm -= 0.02;
+	if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE &&
+		glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+		rotBuzzRightArm += 0.02;
+	else if (modelSelected == 3 && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS &&
+		glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+		rotBuzzRightArm -= 0.02;
+
 	if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		modelMatrixBuzz = glm::rotate(modelMatrixBuzz, 0.02f, glm::vec3(0, 1, 0));
 	else if (modelSelected == 4 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
@@ -804,7 +854,7 @@ void applicationLoop() {
 
 	modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(3.0, 0.0, 20.0));
 
-	modelMatrixBuzz = glm::translate(modelMatrixBuzz, glm::vec3(3.0, 0.0, -5.0));
+	modelMatrixBuzz = glm::translate(modelMatrixBuzz, glm::vec3(3.0, 0.0, 17.0));
 
 	modelMatrixAC_Shao = glm::translate(modelMatrixAC_Shao, glm::vec3(8.0, 0.0, -25.0));
 	modelMatrixAC_Shao = glm::scale(modelMatrixAC_Shao, glm::vec3(1.5f, 1.5f, 1.5f));
@@ -1101,23 +1151,58 @@ void applicationLoop() {
 		// Se regresa el cull faces IMPORTANTE para la capa
 		glEnable(GL_CULL_FACE);
 
-		//Matrices del modelo de Buzz
-		glm::mat4 modelMatrixBuzzBody = glm::mat4(modelMatrixBuzz);//sobre estas hacemos rotaciones
+		glm::mat4 modelMatrixBuzzBody = glm::mat4(modelMatrixBuzz);
 		modelMatrixBuzzBody = glm::scale(modelMatrixBuzzBody, glm::vec3(2.5f, 2.5f, 2.5f));
 		modelBuzzTorso.render(modelMatrixBuzzBody);
-		glm::mat4 modelMatrixBuzzLeftArm = glm::mat4(modelMatrixBuzzBody);
-		modelMatrixBuzzLeftArm = glm::translate(modelMatrixBuzzLeftArm, glm::vec3(0.183784, 0.579864, -0.027445));
-		modelMatrixBuzzLeftArm = glm::rotate(modelMatrixBuzzLeftArm, rotBuzzLeftArm, glm::vec3(1.0f, 0.0f, 0.0f));
-		modelMatrixBuzzLeftArm = glm::rotate(modelMatrixBuzzLeftArm, glm::radians(-65.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		modelMatrixBuzzLeftArm = glm::translate(modelMatrixBuzzLeftArm, glm::vec3(-0.183784, -0.579864, 0.027445));
-		modelBuzzLeftArm.render(modelMatrixBuzzLeftArm);
-		glm::mat4 modelMatrixBuzzLeftForeArm = glm::mat4(modelMatrixBuzzLeftArm);
-		modelBuzzLeftForearm.render(modelMatrixBuzzLeftForeArm);
-		glm::mat4 modelMatrixBuzzLeftHand = glm::mat4(modelMatrixBuzzLeftForeArm);
-		modelBuzzLeftHand.render(modelMatrixBuzzLeftHand);
-		glm::mat4 modelMatrixBuzzHead = glm::mat4(modelMatrixBuzzBody);
-		modelMatrixBuzzHead = glm::rotate(modelMatrixBuzzHead, rotBuzzHead, glm::vec3(0.0f, 1.0f, 0.0f));
-		modelBuzzHead.render(modelMatrixBuzzHead);
+
+		glm::mat4 modelMatrizBuzzLeftArm = glm::mat4(modelMatrixBuzzBody);
+		modelMatrizBuzzLeftArm = glm::translate(modelMatrizBuzzLeftArm, glm::vec3(0.183784, 0.579864, -0.027445));
+		modelMatrizBuzzLeftArm = glm::rotate(modelMatrizBuzzLeftArm, rotBuzzLeftArm, glm::vec3(1.0f, 0.0f, 0.0f));
+		modelMatrizBuzzLeftArm = glm::rotate(modelMatrizBuzzLeftArm, glm::radians(-65.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		modelMatrizBuzzLeftArm = glm::translate(modelMatrizBuzzLeftArm, glm::vec3(-0.183784, -0.579864, 0.027445));
+		modelBuzzLeftArm.render(modelMatrizBuzzLeftArm);
+
+		glm::mat4 modelMatrizBuzzLeftForeArm = glm::mat4(modelMatrizBuzzLeftArm);
+		modelBuzzLeftForeArm.render(modelMatrizBuzzLeftForeArm);
+		glm::mat4 modelMatrizBuzzLeftHand = glm::mat4(modelMatrizBuzzLeftForeArm);
+		modelBuzzLeftHand.render(modelMatrizBuzzLeftHand);
+		glm::mat4 modelMatrizBuzzHead = glm::mat4(modelMatrixBuzzBody);
+		modelMatrizBuzzHead = glm::rotate(modelMatrizBuzzHead, rotBuzzHead, glm::vec3(0.0f, 1.0f, 0.0f));
+		modelBuzzHead.render(modelMatrizBuzzHead);
+		glm::mat4 modelMatrizBuzzHip = glm::mat4(modelMatrixBuzzBody);
+		modelBuzzHip.render(modelMatrizBuzzHip);
+		glm::mat4 modelMatrixBuzzLeftThigh = glm::mat4(modelMatrizBuzzHip);
+		modelBuzzLeftThigh.render(modelMatrixBuzzLeftThigh);
+		glm::mat4 modelMatrixBuzzLeftCalf = glm::mat4(modelMatrixBuzzLeftThigh);
+		modelBuzzLeftCalf.render(modelMatrixBuzzLeftCalf);
+		glm::mat4 modelMatrixBuzzLeftFoot = glm::mat4(modelMatrixBuzzLeftCalf);
+		modelBuzzLeftFoot.render(modelMatrixBuzzLeftFoot);
+		glm::mat4 modelMatrixBuzzLeftWing1 = glm::mat4(modelMatrixBuzzBody);
+		modelBuzzLeftWing1.render(modelMatrixBuzzLeftWing1);
+		glm::mat4 modelMatrixBuzzLeftWing2 = glm::mat4(modelMatrixBuzzLeftWing1);
+		modelBuzzLeftWing2.render(modelMatrixBuzzLeftWing2);
+
+		glm::mat4 modelMatrixBuzzRightArm = glm::mat4(modelMatrixBuzzBody);			
+		modelMatrixBuzzRightArm = glm::translate(modelMatrixBuzzRightArm, glm::vec3(-0.173784, 0.579864, 0.027445));
+		modelMatrixBuzzRightArm = glm::rotate(modelMatrixBuzzRightArm, glm::radians(60.0f), glm::vec3(0.0, 0.0, 1.0));
+		modelMatrixBuzzRightArm = glm::rotate(modelMatrixBuzzRightArm, rotBuzzRightArm, glm::vec3(0.0, 1.0, 0.0));
+		modelMatrixBuzzRightArm = glm::translate(modelMatrixBuzzRightArm, glm::vec3(0.173784, -0.579864, -0.027445));
+		modelBuzzRightArm.render(modelMatrixBuzzRightArm);
+
+		glm::mat4 modelMatrixBuzzRightForeArm = glm::mat4(modelMatrixBuzzRightArm);
+		modelBuzzRightForeArm.render(modelMatrixBuzzRightForeArm);
+		glm::mat4 modelMatrixBuzzRightHand = glm::mat4(modelMatrixBuzzRightForeArm);
+		modelBuzzRightHand.render(modelMatrixBuzzRightHand);
+		glm::mat4 modelMatrixBuzzRightThigh = glm::mat4(modelMatrizBuzzHip);
+		modelBuzzRightThigh.render(modelMatrixBuzzRightThigh);
+		glm::mat4 modelMatrixBuzzRightCalf = glm::mat4(modelMatrixBuzzRightThigh);
+		modelBuzzRightCalf.render(modelMatrixBuzzRightCalf);
+		glm::mat4 modelMatrixBuzzRightFoot = glm::mat4(modelMatrixBuzzRightCalf);
+		modelBuzzRightFoot.render(modelMatrixBuzzRightFoot);
+		glm::mat4 modelMatrixBuzzRightWing1 = glm::mat4(modelMatrixBuzzBody);
+		modelBuzzRightWing1.render(modelMatrixBuzzRightWing1);
+		glm::mat4 modelMatrixBuzzRightWing2 = glm::mat4(modelMatrixBuzzRightWing1);
+		modelBuzzRightWing2.render(modelMatrixBuzzRightWing2);
 		
 		//Model Assassin's Creed Ale
 		modelAC_Shao.render(modelMatrixAC_Shao);
