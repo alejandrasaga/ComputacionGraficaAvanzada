@@ -164,6 +164,8 @@ int numPasosBuzz = 0;
 
 // Var animate helicopter
 float rotHelHelY = 0.0;
+float alturaHeli = 0.0;
+float velHeli = 5.0;
 
 // Var animate lambo dor
 int stateDoor = 0;
@@ -788,6 +790,8 @@ void applicationLoop() {
 	float rotWheelsY2 = 0.0;
 	int numberAdvance2 = 0;
 	int maxAdvance2 = 0.0;
+	//Variables para la maquina de estados del helicoptero
+	int stateHeli = 0;
 
 	matrixModelRock = glm::translate(matrixModelRock, glm::vec3(-3.0, 0.0, 2.0));
 
@@ -1194,7 +1198,7 @@ void applicationLoop() {
 		}
 
 		// Constantes de animaciones
-		rotHelHelY += 0.5;
+		//rotHelHelY = 15.0;
 
 		/*****************
 		* MAQUINAS DE ESTADO
@@ -1317,7 +1321,44 @@ void applicationLoop() {
 		default:
 			break;
 		}
+		
+		//MAQUINA DE ESTADOS PARA EL HELICOPTERO
+		switch (stateHeli) {
+			case 0:
+				modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, -0.249548));
+				modelMatrixHeliHeli = glm::rotate(modelMatrixHeliHeli, rotHelHelY, glm::vec3(0.0, 0.01, 0.0));//Mueve la helice principal
+				modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
+				modelHeliHeli.render(modelMatrixHeliHeli);
 
+
+				modelMatrixHeli = glm::translate(modelMatrixHeli, glm::vec3(0.0f,-0.01f, 0.0f));
+				alturaHeli += 0.01;
+				if (alturaHeli < 4.85)
+					rotHelHelY += 0.2;
+				if (alturaHeli >= 4.85)
+					rotHelHelY -= 0.1;
+					
+				if (alturaHeli > 9.7) {
+					alturaHeli = 0.0;
+					stateHeli = 1;
+				}
+				break;
+
+			case 1:
+				modelMatrixHeliHeli = glm::rotate(modelMatrixHeliHeli, rotHelHelY, glm::vec3(0, 1, 0));
+				velHeli += 0.5;
+				if (velHeli > 15.0) {
+					velHeli = 0.0;
+					stateHeli = 1;
+				}
+				break;
+
+			case 2:
+
+				break;
+		default:
+			break;
+		}
 
 
 		glfwSwapBuffers(window);
