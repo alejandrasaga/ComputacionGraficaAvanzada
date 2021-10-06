@@ -87,6 +87,8 @@ Model mayowModelAnimate;
 Model cowboyAnimate;
 //Cyborg
 Model cyborgAnimate;
+//Boy
+Model boyAnimate;
 
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
 GLuint skyboxTextureID;
@@ -120,6 +122,7 @@ glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
 glm::mat4 modelMatrixCowboy = glm::mat4(1.0f);
 glm::mat4 modelMatrixCyborg = glm::mat4(1.0f);
+glm::mat4 modelMatrixBoy = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 int modelSelected = 0;
@@ -305,6 +308,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	//Cyborg
 	cyborgAnimate.loadModel("../models/cyborg/cyborgTest.fbx");
 	cyborgAnimate.setShader(&shaderMulLighting);
+
+	//Boy
+	boyAnimate.loadModel("../models/boy/boy02animation01.fbx");
+	boyAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
@@ -545,6 +552,7 @@ void destroy() {
 	mayowModelAnimate.destroy();
 	cowboyAnimate.destroy();
 	cyborgAnimate.destroy();
+	boyAnimate.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -740,6 +748,7 @@ void applicationLoop() {
 
 	modelMatrixCowboy = glm::translate(modelMatrixCowboy, glm::vec3(5.0f, 0.05f,-10.0f));
 	modelMatrixCyborg = glm::translate(modelMatrixCyborg, glm::vec3(-3.0f, 0.05f, -8.0f));
+	modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(-3.0f, 0.05f, -2.0f));
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -1025,6 +1034,10 @@ void applicationLoop() {
 		glm::mat4 modelMatrixCyborgBody = glm::mat4(modelMatrixCyborg);
 		modelMatrixCyborgBody = glm::scale(modelMatrixCyborgBody, glm::vec3(0.01,0.01,0.01));
 		cyborgAnimate.render(modelMatrixCyborgBody);
+
+		glm::mat4 modelMatrixBoyBody = glm::mat4(modelMatrixBoy);
+		modelMatrixBoyBody = glm::scale(modelMatrixBoyBody, glm::vec3(0.01, 0.01, 0.01));
+		boyAnimate.render(modelMatrixBoyBody);
 
 		/*******************************************
 		 * Skybox
