@@ -310,7 +310,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	cyborgAnimate.setShader(&shaderMulLighting);
 
 	//Boy
-	boyAnimate.loadModel("../models/boy/boy02animation01.fbx");
+	boyAnimate.loadModel("../models/boy/boyFull1.fbx");
 	boyAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
@@ -748,7 +748,9 @@ void applicationLoop() {
 
 	modelMatrixCowboy = glm::translate(modelMatrixCowboy, glm::vec3(5.0f, 0.05f,-10.0f));
 	modelMatrixCyborg = glm::translate(modelMatrixCyborg, glm::vec3(-3.0f, 0.05f, -8.0f));
+	
 	modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(-3.0f, 0.05f, -2.0f));
+
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -1036,7 +1038,8 @@ void applicationLoop() {
 		cyborgAnimate.render(modelMatrixCyborgBody);
 
 		glm::mat4 modelMatrixBoyBody = glm::mat4(modelMatrixBoy);
-		modelMatrixBoyBody = glm::scale(modelMatrixBoyBody, glm::vec3(0.01, 0.01, 0.01));
+		//modelMatrixBoyBody = glm::scale(modelMatrixBoyBody, glm::vec3(0.01, 0.01, 0.01));
+		boyAnimate.setAnimationIndex(0);
 		boyAnimate.render(modelMatrixBoyBody);
 
 		/*******************************************
