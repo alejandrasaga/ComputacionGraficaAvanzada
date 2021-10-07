@@ -101,12 +101,19 @@ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
 GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
 GL_TEXTURE_CUBE_MAP_NEGATIVE_Z };
 
-std::string fileNames[6] = { "../Textures/mp_bloodvalley/blood-valley_ft.tga",
+/*std::string fileNames[6] = { "../Textures/mp_bloodvalley/blood-valley_ft.tga",
 		"../Textures/mp_bloodvalley/blood-valley_bk.tga",
 		"../Textures/mp_bloodvalley/blood-valley_up.tga",
 		"../Textures/mp_bloodvalley/blood-valley_dn.tga",
 		"../Textures/mp_bloodvalley/blood-valley_rt.tga",
-		"../Textures/mp_bloodvalley/blood-valley_lf.tga" };
+		"../Textures/mp_bloodvalley/blood-valley_lf.tga" };*/
+
+std::string fileNames[6] = { "../Textures/sample/skybox2_fr.tga",
+		"../Textures/sample/skybox2_bk.tga",
+		"../Textures/sample/skybox2_up.tga",
+		"../Textures/sample/skybox2_dn.tga",
+		"../Textures/sample/skybox2_rt.tga",
+		"../Textures/sample/skybox2_lf.tga" };
 
 bool exitApp = false;
 int lastMousePosX, offsetX = 0;
@@ -715,6 +722,20 @@ bool processInput(bool continueApplication) {
 		modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(-0.02, 0.0, 0.0));
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(0.02, 0.0, 0.0));
+	//Boy controls
+	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(0.0f, 0.0f, 0.01f));
+		boyAnimate.setAnimationIndex(0);
+	} else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(0.0f, 0.0f, -0.01f));
+		boyAnimate.setAnimationIndex(0);
+	} else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(-0.01f, 0.0f, 0.0f));
+		boyAnimate.setAnimationIndex(0);
+	} else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(0.01f, 0.0f, 0.0f));
+		boyAnimate.setAnimationIndex(0);
+	}
 
 	glfwPollEvents();
 	return continueApplication;
@@ -1026,7 +1047,7 @@ void applicationLoop() {
 		 *******************************************/
 		glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
 		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
-		mayowModelAnimate.setAnimationIndex(0);
+		//mayowModelAnimate.setAnimationIndex(0);
 		mayowModelAnimate.render(modelMatrixMayowBody);
 
 		glm::mat4 modelMatrixCowboyBody = glm::mat4(modelMatrixCowboy);
@@ -1039,8 +1060,8 @@ void applicationLoop() {
 
 		glm::mat4 modelMatrixBoyBody = glm::mat4(modelMatrixBoy);
 		//modelMatrixBoyBody = glm::scale(modelMatrixBoyBody, glm::vec3(0.01, 0.01, 0.01));
-		boyAnimate.setAnimationIndex(0);
 		boyAnimate.render(modelMatrixBoyBody);
+		boyAnimate.setAnimationIndex(1);
 
 		/*******************************************
 		 * Skybox
