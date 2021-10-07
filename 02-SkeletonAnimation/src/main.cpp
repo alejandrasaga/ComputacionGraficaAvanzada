@@ -310,7 +310,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	cyborgAnimate.setShader(&shaderMulLighting);
 
 	//Boy
-	boyAnimate.loadModel("../models/boy/boyFull1.fbx");
+	boyAnimate.loadModel("../models/boy/boyFull2.fbx");
 	boyAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
