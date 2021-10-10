@@ -47,6 +47,8 @@ Shader shader;
 Shader shaderSkybox;
 //Shader con multiples luces
 Shader shaderMulLighting;
+//Shader para ejercicio con multiples texturas
+Shader shaderMultiplesTexturas;
 
 std::shared_ptr<FirstPersonCamera> camera(new FirstPersonCamera());
 
@@ -55,6 +57,7 @@ Box boxCesped;
 Box boxWalls;
 Box boxHighway;
 Box boxLandingPad;
+Box boxMulTexturas;
 Sphere esfera1(20, 20);
 // Models complex instances
 Model modelRock;
@@ -106,7 +109,9 @@ Model modelAC_Shao;
 //Modelo Luigi Mario Party 8
 Model modelLuigi;
 
-GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
+GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID,
+		textureAguaID, textureEsponjaID;
+
 GLuint skyboxTextureID;
 
 GLenum types[6] = {
@@ -257,6 +262,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	shader.initialize("../Shaders/colorShader.vs", "../Shaders/colorShader.fs");
 	shaderSkybox.initialize("../Shaders/skyBox.vs", "../Shaders/skyBox.fs");
 	shaderMulLighting.initialize("../Shaders/iluminacion_texture_res.vs", "../Shaders/multipleLights.fs");
+	shaderMultiplesTexturas.initialize("../Shaders/iluminacion_texture_res.vs", "../Shaders/multipleLights_ejercicio.fs");
 
 	// Inicializacion de los objetos.
 	skyboxSphere.init();
@@ -278,6 +284,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
 	boxLandingPad.init();
 	boxLandingPad.setShader(&shaderMulLighting);
+
+	boxMulTexturas.init();
+	boxMulTexturas.setShader(&shaderMultiplesTexturas);
 
 	modelRock.loadModel("../models/rock/rock.obj");
 	modelRock.setShader(&shaderMulLighting);
@@ -571,6 +580,47 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	//LIBERAR MEMORIA DE LA TEXTURA
 	textureLandingPad.freeImage(bitmap);
 
+	// TEXTURA DE AGUA PARA EL EJERCICIO
+	Texture textureAgua ("../Textures/water.jpg");
+	bitmap = textureAgua.loadImage();
+	data = textureAgua.convertToData(bitmap, imageWidth,
+		imageHeight);
+	glGenTextures(1, &textureAguaID);
+	glBindTexture(GL_TEXTURE_2D, textureAguaID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT); 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
+			GL_BGRA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+		std::cout << "Failed to load texture" << std::endl;
+	// Libera la memoria de la textura
+	textureAgua.freeImage(bitmap);
+
+	//TEXTURA DE ESPONJA PARA EL EJERCICIO
+	Texture textureEsponja ("../Textures/sponge.jpg");
+	bitmap = textureEsponja.loadImage();
+	data = textureAgua.convertToData(bitmap, imageWidth,
+		imageHeight);
+	glGenTextures(1, &textureEsponjaID);
+	glBindTexture(GL_TEXTURE_2D, textureEsponjaID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
+			GL_BGRA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+		std::cout << "Failed to load texture" << std::endl;
+	// Libera la memoria de la textura
+	textureEsponja.freeImage(bitmap);
 }
 
 void destroy() {
@@ -632,6 +682,8 @@ void destroy() {
 	glDeleteTextures(1, &textureWindowID);
 	glDeleteTextures(1, &textureHighwayID);
 	glDeleteTextures(1, &textureLandingPadID);
+	glDeleteTextures(1, &textureAguaID);
+	glDeleteTextures(1, &textureEsponjaID);
 
 	// Cube Maps Delete
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
@@ -919,6 +971,11 @@ void applicationLoop() {
 			glm::value_ptr(projection));
 		shaderMulLighting.setMatrix4("view", 1, false,
 			glm::value_ptr(view));
+		// Settea la matriz de vista y projection al shader con multiples luces
+		shaderMultiplesTexturas.setMatrix4("projection", 1, false,
+			glm::value_ptr(projection));
+		shaderMultiplesTexturas.setMatrix4("view", 1, false,
+			glm::value_ptr(view));
 
 		/*******************************************
 		 * Propiedades Luz direccional
@@ -938,6 +995,28 @@ void applicationLoop() {
 		 * Propiedades PointLights
 		 *******************************************/
 		shaderMulLighting.setInt("pointLightCount", 0);
+
+		/*EJERCICIO*/
+		/*******************************************
+		 * Propiedades Luz direccional
+		 *******************************************/
+		shaderMultiplesTexturas.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+		shaderMultiplesTexturas.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
+		shaderMultiplesTexturas.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.7, 0.7, 0.7)));
+		shaderMultiplesTexturas.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.9, 0.9, 0.9)));
+		shaderMultiplesTexturas.setVectorFloat3("directionalLight.direction", glm::value_ptr(glm::vec3(-1.0, 0.0, 0.0)));
+
+		/*******************************************
+		 * Propiedades SpotLights
+		 *******************************************/
+		shaderMultiplesTexturas.setInt("spotLightCount", 0);
+
+		/*******************************************
+		 * Propiedades PointLights
+		 *******************************************/
+		shaderMultiplesTexturas.setInt("pointLightCount", 0);
+
+
 
 		/*******************************************
 		 * Cesped
@@ -1055,6 +1134,16 @@ void applicationLoop() {
 		esfera1.setScale(glm::vec3(3.0f, 3.0f, 3.0f));
 		esfera1.setPosition(glm::vec3(10.0f, 2.0f, -5.0f));
 		esfera1.render();
+
+		/*RENDER BOX EJERCICIO*/
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureAguaID);
+		shaderMultiplesTexturas.setInt("texture1", 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, textureEsponjaID);
+		shaderMultiplesTexturas.setInt("texture2", 1);
+		boxMulTexturas.setPosition(glm::vec3(0.0,2.0,0.0));
+		boxMulTexturas.render();
 
 		/*******************************************
 		 * Custom objects obj
