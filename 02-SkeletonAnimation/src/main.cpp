@@ -313,7 +313,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	cowboyAnimate.setShader(&shaderMulLighting);
 
 	//Cyborg
-	cyborgAnimate.loadModel("../models/cyborg/cyborgTest.fbx");
+	cyborgAnimate.loadModel("../models/boy2/boy2.fbx");
 	cyborgAnimate.setShader(&shaderMulLighting);
 
 	//Boy
