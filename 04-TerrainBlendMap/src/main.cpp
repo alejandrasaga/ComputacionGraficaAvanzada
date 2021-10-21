@@ -82,15 +82,20 @@ Model modelDartLegoRightLeg;
 // Model animate instance
 // Mayow
 Model mayowModelAnimate;
+//Boy
+Model boyAnimate;
+//Model chico bailando
+Model chicoAnimate;
+
 // Terrain model instance
-Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
+Terrain terrain(-1, -1, 190, 10, "../Textures/HeightMap2.png");
 
 GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textureLandingPadID;
 GLuint textureTerrainBackgroundID, textureTerrainRID, textureTerrainGID, textureTerrainBID, textureTerrainBlendMapID;
 GLuint skyboxTextureID;
 
 GLenum types[6] = {
-GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+GL_TEXTURE_CUBE_MAP_POSITIVE_X,	
 GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
 GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
 GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
@@ -115,6 +120,8 @@ glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
+glm::mat4 modelMatrixBoy = glm::mat4(1.0f);
+glm::mat4 modelMatrixChico = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 int modelSelected = 0;
@@ -276,8 +283,16 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelDartLegoRightLeg.setShader(&shaderMulLighting);
 
 	//Mayow
-	mayowModelAnimate.loadModel("../models/boy/Northern Soul Spin.fbx");
+	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
+
+	//Boy
+	boyAnimate.loadModel("../models/boy/boyFull2.fbx");
+	boyAnimate.setShader(&shaderMulLighting);
+
+	//chico bailando
+	chicoAnimate.loadModel("../models/Northern Soul Spin/Northern Soul Spin.dae");
+	chicoAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 3.0, 4.0));
 
@@ -471,7 +486,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureLandingPad.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainBackground("../Textures/grassy2.png");
+	Texture textureTerrainBackground("../Textures/grass.png");
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainBackground.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -503,7 +518,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainBackground.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainR("../Textures/mud.png");
+	Texture textureTerrainR("../Textures/snow.png");
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainR.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -535,7 +550,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainR.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainG("../Textures/grassFlowers.png");
+	Texture textureTerrainG("../Textures/flowers.png");
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainG.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -567,7 +582,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainG.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainB("../Textures/path.png");
+	Texture textureTerrainB("../Textures/camino.png");
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
 	bitmap = textureTerrainB.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
@@ -599,9 +614,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	textureTerrainB.freeImage(bitmap);
 
 	// Definiendo la textura a utilizar
-	Texture textureTerrainBlendMap("../Textures/blendMap.png");
+	Texture textureTerrainBlendMap("../Textures/blendMap2.png");
 	// Carga el mapa de bits (FIBITMAP es el tipo de dato de la libreria)
-	bitmap = textureTerrainBlendMap.loadImage(true);
+	bitmap = textureTerrainBlendMap.loadImage();
 	// Convertimos el mapa de bits en un arreglo unidimensional de tipo unsigned char
 	data = textureTerrainBlendMap.convertToData(bitmap, imageWidth,
 			imageHeight);
@@ -671,9 +686,11 @@ void destroy() {
 	modelLamboRightDor.destroy();
 	modelRock.destroy();
 
-
 	// Custom objects animate
 	mayowModelAnimate.destroy();
+	boyAnimate.destroy();
+	chicoAnimate.destroy();
+
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -842,6 +859,24 @@ bool processInput(bool continueApplication) {
 	else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		modelMatrixDart = glm::translate(modelMatrixDart, glm::vec3(0.02, 0.0, 0.0));
 
+	//Boy controls
+	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(0.0f, 0.0f, 0.01f));
+		boyAnimate.setAnimationIndex(0);
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(0.0f, 0.0f, -0.01f));
+		boyAnimate.setAnimationIndex(0);
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		modelMatrixBoy = glm::rotate(modelMatrixBoy, -0.02f, glm::vec3(0, 1, 0));
+		boyAnimate.setAnimationIndex(0);
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		modelMatrixBoy = glm::rotate(modelMatrixBoy, 0.02f, glm::vec3(0, 1, 0));
+		boyAnimate.setAnimationIndex(0);
+	}
+
 	glfwPollEvents();
 	return continueApplication;
 }
@@ -861,6 +896,9 @@ void applicationLoop() {
 
 	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(13.0f, 0.05f, -5.0f));
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+
+	modelMatrixChico = glm::translate(modelMatrixChico, glm::vec3(15.0f, 0.05f, -10.0f));
+	modelMatrixChico = glm::rotate(modelMatrixChico, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
@@ -965,7 +1003,7 @@ void applicationLoop() {
 		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, textureTerrainBlendMapID);
 		shaderTerrain.setInt("blendMapTexture", 4);
-		shaderTerrain.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(20, 20)));
+		shaderTerrain.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(40, 40)));
 		terrain.render();
 		shaderTerrain.setVectorFloat2("scaleUV", glm::value_ptr(glm::vec2(0, 0)));
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -1070,9 +1108,27 @@ void applicationLoop() {
 		 *******************************************/
 		modelMatrixMayow[3][1] = terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
 		glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
-		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(10.0, 10.0, 10.0));
+		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
 		mayowModelAnimate.setAnimationIndex(0);
 		mayowModelAnimate.render(modelMatrixMayowBody);
+
+		/*MODEL BOY*/
+		glm::mat4 modelMatrixBoyBody = glm::mat4(modelMatrixBoy);
+		glm::vec3 ejey = terrain.getNormalTerrain(modelMatrixBoy[3][0], modelMatrixBoy[3][2]);
+		glm::vec3 ejex = modelMatrixBoy[0];
+		glm::vec3 ejez = glm::normalize(glm::cross(ejex, ejey));
+		modelMatrixBoy[0] = glm::vec4(ejex, 0.0f);
+		modelMatrixBoy[1] = glm::vec4(ejey, 0.0f);
+		modelMatrixBoy[2] = glm::vec4(ejez, 0.0f);
+		modelMatrixBoy[3][1] = terrain.getHeightTerrain(modelMatrixBoy[3][0], modelMatrixBoy[3][2]);;
+		boyAnimate.render(modelMatrixBoyBody);
+		boyAnimate.setAnimationIndex(1);
+		
+		/* Chico Animado*/
+		modelMatrixChico[3][1] = terrain.getHeightTerrain(modelMatrixChico[3][0], modelMatrixChico[3][2]);
+		glm::mat4 modelMatrixChicoBody = glm::mat4(modelMatrixChico);
+		modelMatrixChicoBody = glm::scale(modelMatrixChicoBody, glm::vec3(0.015, 0.015, 0.015));
+		chicoAnimate.render(modelMatrixChicoBody);
 
 		/*******************************************
 		 * Skybox
