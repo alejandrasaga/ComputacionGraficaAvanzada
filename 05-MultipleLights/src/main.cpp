@@ -1022,8 +1022,8 @@ void applicationLoop() {
 		* Propiedades Luz SpotLigths
 		*******************************************/
 		glm::vec3 spotPosition = modelMatrixHeli * glm::vec4(0.0f, 0.3, 2.04f, 1.0f);
-		shaderMulLighting.setInt("spotLightCount", 1);
-		shaderTerrain.setInt("spotLightCount", 1);
+		shaderMulLighting.setInt("spotLightCount", 3);
+		shaderTerrain.setInt("spotLightCount", 3);
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.ambient", glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.diffuse", glm::value_ptr(glm::vec3(0.2, 0.35, 0.2)));
 		shaderMulLighting.setVectorFloat3("spotLights[0].light.specular", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
@@ -1042,9 +1042,10 @@ void applicationLoop() {
 		shaderTerrain.setFloat("spotLights[0].constant", 1.0);
 		shaderTerrain.setFloat("spotLights[0].linear", 0.014);
 		shaderTerrain.setFloat("spotLights[0].quadratic", 0.007);
-		shaderTerrain.setFloat("spotLights[0].cutOff", cos(glm::radians(12.5f)));
-		shaderTerrain.setFloat("spotLights[0].outerCutOff", cos(glm::radians(16.0f)));
-
+		shaderTerrain.setFloat("spotLights[0].cutOff", cos(glm::radians(25.0f)));
+		shaderTerrain.setFloat("spotLights[0].outerCutOff", cos(glm::radians(30.0f)));
+		
+		
 		// Luz para el faro 1 del Lambo
 		glm::vec3 spotLightPosition2 = glm::vec3(modelMatrixLambo * glm::vec4(0.72, 2.25, 0.72, 1.0));
 		shaderMulLighting.setVectorFloat3("spotLights[1].light.ambient", glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
@@ -1065,9 +1066,10 @@ void applicationLoop() {
 		shaderTerrain.setFloat("spotLights[1].constant", 1.0);
 		shaderTerrain.setFloat("spotLights[1].linear", 0.014);
 		shaderTerrain.setFloat("spotLights[1].quadratic", 0.007);
-		shaderTerrain.setFloat("spotLights[1].cutOff", cos(glm::radians(12.5f)));
-		shaderTerrain.setFloat("spotLights[1].outerCutOff", cos(glm::radians(16.0f)));
+		shaderTerrain.setFloat("spotLights[1].cutOff", cos(glm::radians(25.0f)));
+		shaderTerrain.setFloat("spotLights[1].outerCutOff", cos(glm::radians(30.0f)));
 
+		
 		// Luz para el faro 2 del Lambo
 		glm::vec3 spotLightPosition3 = glm::vec3(modelMatrixLambo * glm::vec4(-0.72, 2.25, 0.72, 1.0));
 		shaderMulLighting.setVectorFloat3("spotLights[2].light.ambient", glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
@@ -1088,9 +1090,8 @@ void applicationLoop() {
 		shaderTerrain.setFloat("spotLights[2].constant", 1.0);
 		shaderTerrain.setFloat("spotLights[2].linear", 0.014);
 		shaderTerrain.setFloat("spotLights[2].quadratic", 0.007);
-		shaderTerrain.setFloat("spotLights[2].cutOff", cos(glm::radians(12.5f)));
-		shaderTerrain.setFloat("spotLights[2].outerCutOff", cos(glm::radians(16.0f)));
-
+		shaderTerrain.setFloat("spotLights[2].cutOff", cos(glm::radians(25.0f)));
+		shaderTerrain.setFloat("spotLights[2].outerCutOff", cos(glm::radians(30.0f)));
 
 
 		/*******************************************
