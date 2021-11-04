@@ -54,7 +54,8 @@ Shader shaderMulLighting;
 //Shader para el terreno
 Shader shaderTerrain;
 
-std::shared_ptr<Camera> camera(new ThirdPersonCamera());
+std::shared_ptr<Camera> camera3ra(new ThirdPersonCamera());//Camara en 3ra persona
+std::shared_ptr<FirstPersonCamera> camera1ra(new FirstPersonCamera());//Camara en 1ra persona
 float distanceFromTarget = 7.0;
 
 Sphere skyboxSphere(20, 20);
@@ -88,6 +89,8 @@ Model modelLampPost2;
 // Model animate instance
 // Mayow
 Model mayowModelAnimate;
+//Mi mushasho
+Model boyAnimate;
 // Terrain model instance
 Terrain terrain(-1, -1, 200, 8, "../Textures/heightmap.png");
 
@@ -174,6 +177,9 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 void init(int width, int height, std::string strTitle, bool bFullScreen);
 void destroy();
 bool processInput(bool continueApplication = true);
+//Variables para las camaras
+int numCam = 0; //para saber que tipo de camara, 0 para camara3ra persona y 1 para camara1ra
+bool vista = false;//para cuando suelte la tecla se mantenga el tipo de camara
 
 // Implementacion de todas las funciones.
 void init(int width, int height, std::string strTitle, bool bFullScreen) {
@@ -303,10 +309,14 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
 
+	//Boy
+	boyAnimate.loadModel("../models/boy/boyFull2.fbx");
+	boyAnimate.setShader(&shaderMulLighting);
+
 	//No es necesario enviar la posicion ya que la posicion es parte del calculo de la cama en 3ra persona
-	camera->setPosition(glm::vec3(0.0, 0.0, 10.0));
-	camera->setDistanceFromTarget(distanceFromTarget);
-	camera->setSensitivity(1.0);
+	//camera1ra->setPosition(glm::vec3(0.0, 0.0, 10.0)); //posicion de la camara en 1ra persona
+	camera3ra->setDistanceFromTarget(distanceFromTarget);
+	camera3ra->setSensitivity(1.0);
 
 	// Definimos el tamanio de la imagen
 	int imageWidth, imageHeight;
@@ -703,6 +713,7 @@ void destroy() {
 
 	// Custom objects animate
 	mayowModelAnimate.destroy();
+	boyAnimate.destroy();
 
 	// Textures Delete
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -748,7 +759,7 @@ void mouseCallback(GLFWwindow *window, double xpos, double ypos) {
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 	distanceFromTarget -= yoffset;
-	camera->setDistanceFromTarget(distanceFromTarget);
+	camera3ra->setDistanceFromTarget(distanceFromTarget);
 }
 
 void mouseButtonCallback(GLFWwindow *window, int button, int state, int mod) {
@@ -772,11 +783,23 @@ bool processInput(bool continueApplication) {
 	if (exitApp || glfwWindowShouldClose(window) != 0) {
 		return false;
 	}
+	
+	/*Controles de la camara en 1ra persona*/
+	if (numCam == 1 && glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		camera1ra->moveFrontCamera(true, deltaTime);
+	if (numCam == 1 && glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camera1ra->moveFrontCamera(false, deltaTime);
+	if (numCam == 1 && glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera1ra->moveRightCamera(false, deltaTime);
+	if (numCam == 1 && glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera1ra->moveRightCamera(true, deltaTime);
+	if (numCam == 1 && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+		camera1ra->mouseMoveCamera(offsetX, offsetY, deltaTime);
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) 
-		camera->mouseMoveCamera(offsetX, 0.0, deltaTime);
+		camera3ra->mouseMoveCamera(offsetX, 0.0, deltaTime);
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
-		camera->mouseMoveCamera(0.0, offsetY, deltaTime);
+		camera3ra->mouseMoveCamera(0.0, offsetY, deltaTime);
 	offsetX = 0;
 	offsetY = 0;
 
@@ -881,6 +904,21 @@ bool processInput(bool continueApplication) {
 		modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, -0.02));
 	}
 
+	//Agregamos el cambio de camaras
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS ) {
+		std::cout << "Se presiono la K" << std::endl;
+		vista = false;
+		if (numCam == 1) {
+			numCam = 0;
+		}
+		else if (numCam == 0) {
+			numCam = 1;
+		}
+	}
+	else if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_RELEASE && glfwGetKey(window, GLFW_KEY_K) == GLFW_RELEASE) {
+		vista = true;
+	}
+
 	glfwPollEvents();
 	return continueApplication;
 }
@@ -938,7 +976,7 @@ void applicationLoop() {
 			angleTarget -= 90.0;
 			target = modelMatrixDart[3];
 		}
-		else {
+		else  {
 			axis = glm::axis(glm::quat_cast(modelMatrixMayow));
 			angleTarget = glm::angle(glm::quat_cast(modelMatrixMayow));
 			target = modelMatrixMayow[3];
@@ -949,10 +987,14 @@ void applicationLoop() {
 		if (axis.y < 0)
 			angleTarget = -angleTarget;
 
-		camera->setCameraTarget(target);
-		camera->setAngleTarget(angleTarget);
-		camera->updateCamera();
-		view = camera->getViewMatrix();
+		camera3ra->setCameraTarget(target);
+		camera3ra->setAngleTarget(angleTarget);
+		camera3ra->updateCamera();
+
+		if (numCam == 1) 
+			view = camera1ra->getViewMatrix();
+		else
+			view = camera3ra->getViewMatrix();
 	
 		// Settea la matriz de vista y projection al shader con solo color
 		shader.setMatrix4("projection", 1, false, glm::value_ptr(projection));
@@ -977,7 +1019,7 @@ void applicationLoop() {
 		/*******************************************
 		 * Propiedades Luz direccional
 		 *******************************************/
-		shaderMulLighting.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+		shaderMulLighting.setVectorFloat3("viewPos", glm::value_ptr(camera3ra->getPosition()));
 		shaderMulLighting.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.05, 0.05, 0.05)));
 		shaderMulLighting.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
 		shaderMulLighting.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.4, 0.4, 0.4)));
@@ -986,7 +1028,7 @@ void applicationLoop() {
 		/*******************************************
 		 * Propiedades Luz direccional Terrain
 		 *******************************************/
-		shaderTerrain.setVectorFloat3("viewPos", glm::value_ptr(camera->getPosition()));
+		shaderTerrain.setVectorFloat3("viewPos", glm::value_ptr(camera3ra->getPosition()));
 		shaderTerrain.setVectorFloat3("directionalLight.light.ambient", glm::value_ptr(glm::vec3(0.05, 0.05, 0.05)));
 		shaderTerrain.setVectorFloat3("directionalLight.light.diffuse", glm::value_ptr(glm::vec3(0.3, 0.3, 0.3)));
 		shaderTerrain.setVectorFloat3("directionalLight.light.specular", glm::value_ptr(glm::vec3(0.4, 0.4, 0.4)));
