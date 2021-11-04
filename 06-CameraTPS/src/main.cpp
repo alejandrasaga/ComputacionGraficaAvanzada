@@ -124,6 +124,7 @@ glm::mat4 modelMatrixLambo = glm::mat4(1.0);
 glm::mat4 modelMatrixAircraft = glm::mat4(1.0);
 glm::mat4 modelMatrixDart = glm::mat4(1.0f);
 glm::mat4 modelMatrixMayow = glm::mat4(1.0f);
+glm::mat4 modelMatrixBoy = glm::mat4(1.0f);
 
 float rotDartHead = 0.0, rotDartLeftArm = 0.0, rotDartLeftHand = 0.0, rotDartRightArm = 0.0, rotDartRightHand = 0.0, rotDartLeftLeg = 0.0, rotDartRightLeg = 0.0;
 int modelSelected = 2;
@@ -314,9 +315,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	boyAnimate.setShader(&shaderMulLighting);
 
 	//No es necesario enviar la posicion ya que la posicion es parte del calculo de la cama en 3ra persona
-	//camera1ra->setPosition(glm::vec3(0.0, 0.0, 10.0)); //posicion de la camara en 1ra persona
 	camera3ra->setDistanceFromTarget(distanceFromTarget);
 	camera3ra->setSensitivity(1.0);
+	camera1ra->setPosition(glm::vec3(1.0, 2.25, 10.0)); //posicion de la camara en 1ra persona
 
 	// Definimos el tamanio de la imagen
 	int imageWidth, imageHeight;
@@ -903,6 +904,23 @@ bool processInput(bool continueApplication) {
 	}else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
 		modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, -0.02));
 	}
+	//Boy controls
+	if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(0.0f, 0.0f, 0.01f));
+		boyAnimate.setAnimationIndex(0);
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(0.0f, 0.0f, -0.01f));
+		boyAnimate.setAnimationIndex(0);
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		modelMatrixBoy = glm::rotate(modelMatrixBoy, -0.02f, glm::vec3(0, 1, 0));
+		boyAnimate.setAnimationIndex(0);
+	}
+	else if (modelSelected == 0 && glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		modelMatrixBoy = glm::rotate(modelMatrixBoy, 0.02f, glm::vec3(0, 1, 0));
+		boyAnimate.setAnimationIndex(0);
+	}
 
 	//Agregamos el cambio de camaras
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS ) {
@@ -944,6 +962,8 @@ void applicationLoop() {
 	modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(13.0f, 0.05f, -5.0f));
 	modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-90.0f), glm::vec3(0, 1, 0));
 
+	modelMatrixBoy = glm::translate(modelMatrixBoy, glm::vec3(-3.0f, 0.05f, -2.0f));
+
 	// Variables to interpolation key frames
 	fileName = "../animaciones/animation_dart_joints.txt";
 	keyFramesDartJoints = getKeyRotFrames(fileName);
@@ -969,8 +989,14 @@ void applicationLoop() {
 
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f),
 				(float) screenWidth / (float) screenHeight, 0.01f, 100.0f);
-		
-		if (modelSelected == 1) {
+
+		if (modelSelected == 0) {
+			axis = glm::axis(glm::quat_cast(modelMatrixBoy));
+			angleTarget = glm::angle(glm::quat_cast(modelMatrixBoy));
+			angleTarget -= 90.0;
+			target = modelMatrixBoy[3];
+		}
+		else if (modelSelected == 1) {
 			axis = glm::axis(glm::quat_cast(modelMatrixDart));
 			angleTarget = glm::angle(glm::quat_cast(modelMatrixDart));
 			angleTarget -= 90.0;
@@ -1257,6 +1283,13 @@ void applicationLoop() {
 		glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
 		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
 		mayowModelAnimate.render(modelMatrixMayowBody);
+
+		//Boy
+		modelMatrixBoy[3][1] = terrain.getHeightTerrain(modelMatrixBoy[3][0], modelMatrixBoy[3][2]);
+		glm::mat4 modelMatrixBoyBody = glm::mat4(modelMatrixBoy);
+		modelMatrixBoyBody = glm::scale(modelMatrixBoyBody, glm::vec3(0.5, 0.5, 0.5));
+		boyAnimate.render(modelMatrixBoyBody);
+		boyAnimate.setAnimationIndex(1);
 
 		/*******************************************
 		 * Skybox
