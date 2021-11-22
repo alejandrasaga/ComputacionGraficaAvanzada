@@ -210,5 +210,36 @@ bool testOBBOBB(AbstractModel::OBB a, AbstractModel::OBB b){
 	return true;
 }
 
+bool testLABPlane(float p, float v, float min, float max, float &tmin, float &tmax){
+	if (fabs(v) < 0.01)
+		return (p >= min && p <= max);
+	float ood = 1.0f / v;
+	float t1 = (min - p) * ood;
+	float t2 = (max - p) * ood;
+	if(t1 > t2){
+		/*float aux = t1;
+		t1 = t2 ;
+		t2 = aux;*/
+		std::swap(t1,t2);
+	}
+	if(t1 > tmin)
+		tmin = t1;
+	if(t2 < tmax)
+		tmax = t2;
+	if(tmin > tmax)
+		return true;
+	return false;
+}
+
+bool intersectRayAABB(glm::vec3 p1, glm::vec3 p2, glm::vec3 d, AbstractModel::AABB aabb){
+	float tmin = -FLT_MAX, tmax = FLT_MAX;
+	if(testLABPlane(p1.x, d.x, aabb.mins.x, aabb.maxs.x, tmin, tmax))
+		return false;
+	if(testLABPlane(p1.y, d.y, aabb.mins.y, aabb.maxs.y, tmin, tmax))
+		return false;
+	if(testLABPlane(p1.z, d.z, aabb.mins.z, aabb.maxs.z, tmin, tmax))
+		return false;
+
+}
 
 #endif /* COLISIONES_H_ */
