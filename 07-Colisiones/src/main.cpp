@@ -1543,6 +1543,19 @@ void applicationLoop() {
 				}
 			}
 		}
+		/**************************
+		****RAY TEST COLLISIONS
+		**************************/
+		for (std::map<std::string, std::tuple<AbstractModel::SBB, glm::mat4, glm::mat4> >::iterator it = collidersSBB.begin(); it != collidersSBB.end(); it++) {
+			float tray;
+			if (raySphereIntersect(ori, tar,rayDirection, std::get<0>(it->second), tray))
+				std::cout << "Colision" << it->first << "with" << "Ray" << std::endl;
+		}
+		for (std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> >::iterator it = collidersOBB.begin(); it != collidersOBB.end(); it++) {
+			float tray;
+			if (intersectRayOBB(ori, tar, rayDirection, std::get<0>(it->second)))
+				std::cout << "Colision" << it->first << "with" << "Ray" << std::endl;
+		}
 
 		/*******************************************
 		 * Interpolation key frames with disconect objects
