@@ -1701,7 +1701,6 @@ void applicationLoop() {
 					modelMatrixSpook = glm::translate(modelMatrixSpook, glm::vec3(0, 0, movingModel));
 			}
 		}
-
 		/*******************************************
 		 * Interpolation key frames with disconect objects
 		 *******************************************/
