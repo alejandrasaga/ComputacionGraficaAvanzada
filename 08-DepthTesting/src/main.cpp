@@ -245,7 +245,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	glEnable(GL_DEPTH_TEST);///Se activa la prueba de profundidad
-	glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);//Recorte de caras ocultas
 
 	// Inicialización de los shaders
 	shader.initialize("../Shaders/colorShader.vs", "../Shaders/colorShader.fs");
@@ -1015,7 +1015,7 @@ void applicationLoop() {
 					glm::value_ptr(projection));
 		shaderTerrain.setMatrix4("view", 1, false,
 				glm::value_ptr(view));
-		// Settea la matriz de vista y proyeccion al shader del buffer
+		// Settea la matriz de vista y proyeccion al shader del buffer de profundidad
 		shaderDepthTesting.setMatrix4("projection", 1, false,
 			glm::value_ptr(projection));
 		shaderDepthTesting.setMatrix4("view", 1, false,

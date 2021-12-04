@@ -63,7 +63,7 @@ Shader shaderTerrain;
 //Shader para las particulas de fountain
 Shader shaderParticlesFountain;
 //Shader para las particulas de fuego
-//Shader shaderParticlesFire;
+Shader shaderParticlesFire;
 
 std::shared_ptr<Camera> camera(new ThirdPersonCamera());
 float distanceFromTarget = 7.0;
@@ -187,7 +187,7 @@ std::map<std::string, glm::vec3> blendingUnsorted = {
 		{"lambo", glm::vec3(23.0, 0.0, 0.0)},
 		{"heli", glm::vec3(5.0, 10.0, -5.0)},
 		{"fountain", glm::vec3(5.0, 0.0, -40.0)},
-		//{"fire", glm::vec3(0.0, 0.0, 7.0)}
+		{"fire", glm::vec3(0.0, 0.0, 7.0)}
 };
 
 double deltaTime;
@@ -206,7 +206,7 @@ GLuint nParticles = 8000;
 double currTimeParticlesAnimation, lastTimeParticlesAnimation;
 
 // Definition for the particle system fire
-/*GLuint initVelFire, startTimeFire;
+GLuint initVelFire, startTimeFire;
 GLuint VAOParticlesFire;
 GLuint nParticlesFire = 2000;
 GLuint posBuf[2], velBuf[2], age[2];
@@ -214,7 +214,7 @@ GLuint particleArray[2];
 GLuint feedback[2];
 GLuint drawBuf = 1;
 float particleSize = 0.5, particleLifetime = 3.0;
-double currTimeParticlesAnimationFire, lastTimeParticlesAnimationFire;*/
+double currTimeParticlesAnimationFire, lastTimeParticlesAnimationFire;
 
 // Colliders
 std::map<std::string, std::tuple<AbstractModel::OBB, glm::mat4, glm::mat4> > collidersOBB;
@@ -295,7 +295,7 @@ void initParticleBuffers() {
 	glBindVertexArray(0);
 }
 
-/*void initParticleBuffersFire() {
+void initParticleBuffersFire() {
 	// Generate the buffers
 	glGenBuffers(2, posBuf);    // position buffers
 	glGenBuffers(2, velBuf);    // velocity buffers
@@ -382,7 +382,7 @@ void initParticleBuffers() {
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, age[1]);
 
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-}*/
+}
 
 // Implementacion de todas las funciones.
 void init(int width, int height, std::string strTitle, bool bFullScreen) {
