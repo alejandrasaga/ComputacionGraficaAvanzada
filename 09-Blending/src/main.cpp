@@ -23,6 +23,9 @@
 #include "Headers/FirstPersonCamera.h"
 #include "Headers/ThirdPersonCamera.h"
 
+//Font rendering
+#include "Headers/FontTypeRendering.h"
+
 //GLM include
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -102,6 +105,9 @@ GLuint textureCespedID, textureWallID, textureWindowID, textureHighwayID, textur
 GLuint textureTerrainBackgroundID, textureTerrainRID, textureTerrainGID, textureTerrainBID, textureTerrainBlendMapID;
 GLuint skyboxTextureID;
 
+//Modelo para el render del texto
+FontTypeRendering::FontTypeRendering *modelText;
+
 GLenum types[6] = {
 GL_TEXTURE_CUBE_MAP_POSITIVE_X,
 GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
@@ -170,7 +176,6 @@ std::vector<glm::vec3> lamp2Position = { glm::vec3(-36.52, 0, -23.24),
 std::vector<float> lamp2Orientation = {21.37 + 90, -65.0 + 90};
 
 //Blending model unserted
-
 std::map<std :: string, glm::vec3> blendingUnsorted = {
 	{"aircraft", glm::vec3(10.0, 2.0, -17.5)},
 	{"lambo", glm::vec3(23.0, 0.0, 0.0)},
@@ -279,7 +284,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
 	modelAircraft.loadModel("../models/Aircraft_obj/E 45 Aircraft_obj.obj");
 	modelAircraft.setShader(&shaderMulLighting);
-
+	
 	terrain.init();
 	terrain.setShader(&shaderTerrain);
 	terrain.setPosition(glm::vec3(100, 0, 100));
@@ -693,6 +698,10 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		std::cout << "Failed to load texture" << std::endl;
 	// Libera la memoria de la textura
 	textureTerrainBlendMap.freeImage(bitmap);
+
+	//Se inicializa el model de texeles para dibujar texto
+	modelText = new FontTypeRendering::FontTypeRendering(screenWidth, screenHeight);
+	modelText->Initialize();
 }
 
 void destroy() {
@@ -1324,17 +1333,15 @@ void applicationLoop() {
 				// Helicopter
 				glm::mat4 modelMatrixHeliChasis = glm::mat4(modelMatrixHeli);
 				modelHeliChasis.render(modelMatrixHeliChasis);
-
 				glm::mat4 modelMatrixHeliHeli = glm::mat4(modelMatrixHeliChasis);
 				modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, -0.249548));
 				modelMatrixHeliHeli = glm::rotate(modelMatrixHeliHeli, rotHelHelY, glm::vec3(0, 1, 0));
 				modelMatrixHeliHeli = glm::translate(modelMatrixHeliHeli, glm::vec3(0.0, 0.0, 0.249548));
 				modelHeliHeli.render(modelMatrixHeliHeli);
-
 			}
 		}
 		glDisable(GL_BLEND);
-
+		
 		/*******************************************
 		 * Creacion de colliders
 		 * IMPORTANT do this before interpolations
@@ -1634,7 +1641,12 @@ void applicationLoop() {
 			}
 			break;
 		}
-
+		
+		glEnable(GL_BLEND);
+		modelText->render("Hola con texto", -0.2, 0.8, 20, 1.0, 1.0, 0.0);
+		modelText->render("Un contador con text rendering", -0.5, -0.9, 30, 0.5, 0.3, 0.6);
+		glDisable(GL_BLEND);
+		
 		glfwSwapBuffers(window);
 	}
 }
