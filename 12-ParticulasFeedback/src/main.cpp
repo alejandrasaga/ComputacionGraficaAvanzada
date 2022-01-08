@@ -444,7 +444,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	shaderMulLighting.initialize("../Shaders/iluminacion_textura_animation_fog.vs", "../Shaders/multipleLights_fog.fs");
 	shaderTerrain.initialize("../Shaders/terrain_fog.vs", "../Shaders/terrain_fog.fs");
 	shaderParticlesFountain.initialize("../Shaders/particlesFountain.vs", "../Shaders/particlesFountain.fs");
-	//shaderParticlesFire.initialize("../Shaders/particlesFire.vs", "../Shaders/particlesFire.fs", {"Position", "Velocity", "Age"});
+	shaderParticlesFire.initialize("../Shaders/particlesFire.vs", "../Shaders/particlesFire.fs", {"Position", "Velocity", "Age"});
 
 	// Inicializacion de los objetos.
 	skyboxSphere.init();
@@ -519,7 +519,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelLampPost2.setShader(&shaderMulLighting);
 
 	//Grass
-	modelGrass.loadModel("../models/grass/grassModel.obj");
+	modelGrass.loadModel("C:/Users/alexa/Documents/proyectoFinalCGA/models/Autumn Tree/Autumn Tree.obj");
 	modelGrass.setShader(&shaderMulLighting);
 
 	//Fountain
@@ -527,7 +527,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	modelFountain.setShader(&shaderMulLighting);
 
 	//Mayow
-	mayowModelAnimate.loadModel("../models/mayow/personaje2.fbx");
+	mayowModelAnimate.loadModel("../models/boy/boyAnimation.fbx");
 	mayowModelAnimate.setShader(&shaderMulLighting);
 
 	camera->setPosition(glm::vec3(0.0, 0.0, 10.0));
@@ -903,7 +903,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 		std::cout << "Failed to load texture" << std::endl;
 	textureParticlesFountain.freeImage(bitmap);
 
-	/*Texture textureParticleFire("../Textures/fire.png");
+	Texture textureParticleFire("../Textures/fire.png");
 	bitmap = textureParticleFire.loadImage();
 	data = textureParticleFire.convertToData(bitmap, imageWidth, imageHeight);
 	glGenTextures(1, &textureParticleFireID);
@@ -921,9 +921,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	}
 	else
 		std::cout << "Failed to load texture" << std::endl;
-	textureParticleFire.freeImage(bitmap);*/
+	textureParticleFire.freeImage(bitmap);
 
-	/*std::uniform_real_distribution<float> distr01 = std::uniform_real_distribution<float>(0.0f, 1.0f);
+	std::uniform_real_distribution<float> distr01 = std::uniform_real_distribution<float>(0.0f, 1.0f);
 	std::mt19937 generator;
 	std::random_device rd;
 	generator.seed(rd());
@@ -959,7 +959,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	basis[0] = glm::normalize(u);
 	basis[1] = glm::normalize(v);
 	basis[2] = glm::normalize(n);
-	shaderParticlesFire.setMatrix3("EmitterBasis", 1, false, glm::value_ptr(basis));*/
+	shaderParticlesFire.setMatrix3("EmitterBasis", 1, false, glm::value_ptr(basis));
 
 	/*******************************************
 	 * Inicializacion de los buffers de la fuente
@@ -969,7 +969,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	/*******************************************
 	 * Inicializacion de los buffers del fuego
 	 *******************************************/
-	//initParticleBuffersFire();
+	initParticleBuffersFire();
 }
 
 void destroy() {
@@ -1051,14 +1051,14 @@ void destroy() {
 	glDeleteVertexArrays(1, &VAOParticles);
 
 	// Remove the buffer of the fire particles
-	/*glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDeleteBuffers(2, posBuf);
 	glDeleteBuffers(2, velBuf);
 	glDeleteBuffers(2, age);
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
 	glDeleteTransformFeedbacks(2, feedback);
 	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &VAOParticlesFire);*/
+	glDeleteVertexArrays(1, &VAOParticlesFire);
 }
 
 void reshapeCallback(GLFWwindow *Window, int widthRes, int heightRes) {
@@ -1216,10 +1216,10 @@ bool processInput(bool continueApplication) {
 		modelMatrixMayow = glm::rotate(modelMatrixMayow, glm::radians(-1.0f), glm::vec3(0, 1, 0));
 		animationIndex = 0;
 	}if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
-		modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, 0.02));
+		modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, 0.2));
 		animationIndex = 0;
 	}else if (modelSelected == 2 && glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-		modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, -0.02));
+		modelMatrixMayow = glm::translate(modelMatrixMayow, glm::vec3(0, 0, -0.2));
 		animationIndex = 0;
 	}
 
@@ -1270,8 +1270,8 @@ void applicationLoop() {
 	currTimeParticlesAnimation = lastTime;
 	lastTimeParticlesAnimation = lastTime;
 
-	/*currTimeParticlesAnimationFire = lastTime;
-	lastTimeParticlesAnimationFire = lastTime;*/
+	currTimeParticlesAnimationFire = lastTime;
+	lastTimeParticlesAnimationFire = lastTime;
 
 	while (psi) {
 		currTime = TimeManager::Instance().GetTime();
@@ -1342,8 +1342,8 @@ void applicationLoop() {
 		shaderParticlesFountain.setMatrix4("view", 1, false,
 				glm::value_ptr(view));
 		// Settea la matriz de vista y projection al shader para el fuego
-		/*shaderParticlesFire.setMatrix4("projection", 1, false, glm::value_ptr(projection));
-		shaderParticlesFire.setMatrix4("view", 1, false, glm::value_ptr(view));*/
+		shaderParticlesFire.setMatrix4("projection", 1, false, glm::value_ptr(projection));
+		shaderParticlesFire.setMatrix4("view", 1, false, glm::value_ptr(view));
 
 		/*******************************************
 		 * Propiedades de neblina
@@ -1508,18 +1508,19 @@ void applicationLoop() {
 			modelLampPost2.render();
 		}
 
-		// Grass
-		glDisable(GL_CULL_FACE);
-		glm::vec3 grassPosition = glm::vec3(0.0, 0.0, 0.0);
-		grassPosition.y = terrain.getHeightTerrain(grassPosition.x, grassPosition.z);
-		modelGrass.setPosition(grassPosition);
-		modelGrass.render();
-		glEnable(GL_CULL_FACE);
-
 		// Fountain
 		glDisable(GL_CULL_FACE);
 		modelFountain.render(modelMatrixFountain);
 		glEnable(GL_CULL_FACE);
+
+		// Grass
+		//glDisable(GL_CULL_FACE);
+		glm::vec3 grassPosition = glm::vec3(0.0, 0.0, 0.0);
+		grassPosition.y = terrain.getHeightTerrain(grassPosition.x, grassPosition.z);
+		modelGrass.setPosition(grassPosition);
+		modelGrass.setScale(glm::vec3(0.5, 0.5, 0.5));
+		modelGrass.render();
+		//glEnable(GL_CULL_FACE);
 
 		// Dart lego
 		// Se deshabilita el cull faces IMPORTANTE para la capa
@@ -1584,7 +1585,7 @@ void applicationLoop() {
 		}
 		//modelMatrixMayow[3][1] = terrain.getHeightTerrain(modelMatrixMayow[3][0], modelMatrixMayow[3][2]);
 		glm::mat4 modelMatrixMayowBody = glm::mat4(modelMatrixMayow);
-		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.021, 0.021, 0.021));
+		modelMatrixMayowBody = glm::scale(modelMatrixMayowBody, glm::vec3(0.005, 0.005, 0.005));
 		mayowModelAnimate.setAnimationIndex(animationIndex);
 		mayowModelAnimate.render(modelMatrixMayowBody);
 
@@ -1703,7 +1704,7 @@ void applicationLoop() {
 				/**********
 				 * Init Render particles systems
 				 */
-				/*lastTimeParticlesAnimationFire = currTimeParticlesAnimationFire;
+				lastTimeParticlesAnimationFire = currTimeParticlesAnimationFire;
 				currTimeParticlesAnimationFire = TimeManager::Instance().GetTime();
 
 				shaderParticlesFire.setInt("Pass", 1);
@@ -1721,9 +1722,9 @@ void applicationLoop() {
 				glVertexAttribDivisor(2,0);
 				glDrawArrays(GL_POINTS, 0, nParticlesFire);
 				glEndTransformFeedback();
-				glDisable(GL_RASTERIZER_DISCARD);*/
+				glDisable(GL_RASTERIZER_DISCARD);
 
-				/*shaderParticlesFire.setInt("Pass", 2);
+				shaderParticlesFire.setInt("Pass", 2);
 				glm::mat4 modelFireParticles = glm::mat4(1.0);
 				modelFireParticles = glm::translate(modelFireParticles, it->second.second);
 				modelFireParticles[3][1] = terrain.getHeightTerrain(modelFireParticles[3][0], modelFireParticles[3][2]);
@@ -1741,7 +1742,7 @@ void applicationLoop() {
 				glBindVertexArray(0);
 				glDepthMask(GL_TRUE);
 				drawBuf = 1 - drawBuf;
-				shaderParticlesFire.turnOff();*/
+				shaderParticlesFire.turnOff();
 
 				/**********
 				 * End Render particles systems
